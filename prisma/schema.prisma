@@ -1,0 +1,48 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Register, login, update profile
+model User {
+  id           Int    @id @default(autoincrement())
+  email        String @unique
+  name         String
+  password     String
+  mobileNumber String
+  gender       String
+  city         String
+}
+
+model Category {
+  id            Int           @id @default(autoincrement())
+  name          String        @unique
+  subCategories SubCategory[]
+}
+
+model SubCategory {
+  id              Int             @id @default(autoincrement())
+  name            String
+  categoryId     Int
+  category       Category         @relation(fields: [categoryId], references: [id])
+  subSubCategories SubSubCategory[] 
+  images          Image[]        
+}
+
+model SubSubCategory {
+  id            Int      @id @default(autoincrement())
+  name          String
+  subCategoryId Int
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id])
+}
+
+model Image {
+  id          Int      @id @default(autoincrement())
+  url         String   
+  subCategoryId Int
+  subCategory SubCategory @relation(fields: [subCategoryId], references: [id])
+}
